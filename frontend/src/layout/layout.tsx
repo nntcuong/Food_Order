@@ -4,17 +4,19 @@ import ProImage from "@/components/ProImage";
 
 type Props = {
   children: React.ReactNode;
+  showHero?: boolean;
 };
 
-const Layout = ({ children }: Props) => {
+const Layout = ({ children, showHero = false }: Props) => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <ProImage/>
+      {showHero && <ProImage />}
       <div className="container mx-auto flex-1 py-10">{children}</div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };
+
 
 export default Layout;
