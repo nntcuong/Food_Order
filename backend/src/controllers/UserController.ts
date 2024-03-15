@@ -1,6 +1,19 @@
 import { Request,Response } from "express";
 import User from "../model/user";
 import { captureRejectionSymbol } from "events";
+const getUser = async (req: Request, res: Response) => {
+    try {
+      const currentUser = await User.findOne({ _id: req.userId });
+      if (!currentUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      res.json(currentUser);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Something went wrong" });
+    }
+  };
 const createUser=async (req: Request, res: Response)=>{
 
     try {
@@ -20,27 +33,30 @@ const createUser=async (req: Request, res: Response)=>{
     }
 } 
 
-const updateUser=async (req: Request, res: Response)=>{
-
+const updateUser = async (req: Request, res: Response) => {
     try {
-        const {name,address,city,country}=req.body;
-        const user = await User.findById(req.userId);
-        if(!user){
-            return res.status(404).json({message: "User not found"})
-        }
-        user.name=name;
-        user.address=address;
-        user.city=city;
-        user.country=country;
-        await user.save();
-        res.send(user);
+      const { name, address, country, city } = req.body;
+      const user = await User.findById(req.userId);
+  
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      user.name = name;
+      user.address = address;
+      user.city = city;
+      user.country = country;
+  
+      await user.save();
+  
+      res.send(user);
     } catch (error) {
-        console.log(error);
-        res.status(404).json({message:"Error update user"});
-
+      console.log(error);
+      res.status(500).json({ message: "Error updating user" });
     }
-}
+  };
 export default{
     createUser,
-    updateUser
+    updateUser,
+    getUser
 }
